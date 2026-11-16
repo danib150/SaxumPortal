@@ -144,7 +144,6 @@
 
     </section>
 
-    <!-- Script per invio asincrono e blocco anti-spam -->
     <script>
         const form = document.getElementById('candidaturaForm');
         const successBox = document.getElementById('successBox');
@@ -152,7 +151,7 @@
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Validazione aggiuntiva sul testo della bio (min 50 caratteri)
+            // Validazione sul testo della bio (min 50 caratteri)
             const bioText = document.getElementById('bio').value;
             if (bioText.trim().length < 50) {
                 alert("Il campo 'Raccontaci di te' deve contenere almeno 50 caratteri.");
@@ -166,48 +165,30 @@
             const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.innerHTML = 'Invio in corso...';
 
-            const data = {
-                access_key: "1143c03c-1439-4ca7-b0de-466229815da0",
-                nome: document.getElementById('nome').value,
-                cognome: document.getElementById('cognome').value,
-                sesso: document.getElementById('sesso').value,
-                ruolo: document.getElementById('ruolo').value,
-                provincia: document.getElementById('provincia').value,
-                comune: document.getElementById('comune').value,
-                email: document.getElementById('email').value,
-                telefono: document.getElementById('telefono').value,
-                instagram: document.getElementById('instagram').value,
-                tiktok: document.getElementById('tiktok').value,
-                cv: document.getElementById('cv').value,
-                bio: document.getElementById('bio').value
-            };
+            // Raccoglie automaticamente tutti i dati del form in un oggetto FormData
+            const formData = new FormData(form);
 
-            // Mostra il box con l'avviso sulla privacy
-            successBox.classList.remove('d-none');
-
-            // Invia i dati a Web3Forms
+            // Invia i dati a Web3Forms come form-data standard (evita il blocco di sicurezza 400)
             fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(data)
+                body: formData
             })
             .then(async (response) => {
                 let jsonResponse = await response.json();
-                if (response.status == 200) {
+                if (response.status == 200 && jsonResponse.success) {
                     form.reset();
                     submitBtn.innerHTML = 'Inviato!';
+                    successBox.classList.remove('d-none');
                 } else {
                     console.log(jsonResponse);
-                    alert("Errore nell'invio. Riprova.");
+                    alert("Errore nell'invio: " + (jsonResponse.message || "Riprova."));
                     inputs.forEach(input => input.disabled = false);
                     submitBtn.innerHTML = 'Invia Candidatura';
                 }
             })
             .catch(error => {
                 console.log(error);
+                alert("Errore di connessione. Riprova.");
                 inputs.forEach(input => input.disabled = false);
                 submitBtn.innerHTML = 'Invia Candidatura';
             });
