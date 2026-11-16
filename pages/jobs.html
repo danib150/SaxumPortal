@@ -58,14 +58,33 @@
                     </select>
                 </div>
                 <div class="col-md-8">
-                    <label for="ruolo" class="form-label text-secondary small">Ruolo *</label>
+                    <label for="ruolo" class="form-label text-secondary small">Profilo / Ruolo *</label>
                     <select name="ruolo" class="form-select bg-dark text-light border-secondary" id="ruolo" required>
                         <option value="" selected disabled>Seleziona il tuo ruolo</option>
                         <option value="dj">DJ</option>
                         <option value="vocalist">Vocalist</option>
                         <option value="immagine">Ragazza/o Immagine</option>
+                        <option value="smm">SMM/Content Creator</option>
                         <option value="sassofonista">Sassofonista</option>
                     </select>
+                </div>
+            </div>
+
+            <!-- Provincia e Comune -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label for="provincia" class="form-label text-secondary small">Provincia *</label>
+                    <select name="provincia" class="form-select bg-dark text-light border-secondary" id="provincia" required>
+                        <option value="" selected disabled>Seleziona provincia</option>
+                        <option value="Teramo">Teramo</option>
+                        <option value="L'Aquila">L'Aquila</option>
+                        <option value="Pescara">Pescara</option>
+                        <option value="Chieti">Chieti</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="comune" class="form-label text-secondary small">Comune *</label>
+                    <input type="text" name="comune" class="form-control bg-dark text-light border-secondary" id="comune" placeholder="Es. Roseto degli Abruzzi" required>
                 </div>
             </div>
 
@@ -83,11 +102,32 @@
                 </div>
             </div>
 
-            <div class="mb-4">
+            <!-- Social Links (Instagram e TikTok obbligatori) -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label for="instagram" class="form-label text-secondary small">Profilo Instagram *</label>
+                    <input type="url" name="instagram" class="form-control bg-dark text-light border-secondary" id="instagram"
+                        placeholder="https://instagram.com/tuonome" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="tiktok" class="form-label text-secondary small">Profilo TikTok *</label>
+                    <input type="url" name="tiktok" class="form-control bg-dark text-light border-secondary" id="tiktok"
+                        placeholder="https://tiktok.com/@tuonome" required>
+                </div>
+            </div>
+
+            <!-- Link CV (Opzionale) -->
+            <div class="mb-3">
                 <label for="cv" class="form-label text-secondary small">Link CV / Portfolio <span
                         class="text-muted">(Opzionale)</span></label>
                 <input type="url" name="cv" class="form-control bg-dark text-light border-secondary" id="cv"
                     placeholder="https://drive.google.com/... o LinkedIn">
+            </div>
+
+            <!-- Raccontaci di te (Minimo 50 caratteri) -->
+            <div class="mb-4">
+                <label for="bio" class="form-label text-secondary small">Raccontaci di te * <span class="text-muted">(min. 50 caratteri)</span></label>
+                <textarea name="bio" class="form-control bg-dark text-light border-secondary" id="bio" rows="4" placeholder="Parlaci delle tue esperienze, genere musicale preferito o progetti..." minlength="50" required></textarea>
             </div>
 
             <div class="text-center mb-3">
@@ -112,8 +152,15 @@
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            // Validazione aggiuntiva sul testo della bio (min 50 caratteri)
+            const bioText = document.getElementById('bio').value;
+            if (bioText.trim().length < 50) {
+                alert("Il campo 'Raccontaci di te' deve contenere almeno 50 caratteri.");
+                return;
+            }
+
             // Disattiva tutti i campi e il pulsante per evitare spam
-            const inputs = form.querySelectorAll('input, select, button');
+            const inputs = form.querySelectorAll('input, select, textarea, button');
             inputs.forEach(input => input.disabled = true);
 
             const submitBtn = form.querySelector('button[type="submit"]');
@@ -125,12 +172,17 @@
                 cognome: document.getElementById('cognome').value,
                 sesso: document.getElementById('sesso').value,
                 ruolo: document.getElementById('ruolo').value,
+                provincia: document.getElementById('provincia').value,
+                comune: document.getElementById('comune').value,
                 email: document.getElementById('email').value,
                 telefono: document.getElementById('telefono').value,
-                cv: document.getElementById('cv').value
+                instagram: document.getElementById('instagram').value,
+                tiktok: document.getElementById('tiktok').value,
+                cv: document.getElementById('cv').value,
+                bio: document.getElementById('bio').value
             };
 
-            // Mostra il box rosso con l'avviso sulla privacy
+            // Mostra il box con l'avviso sulla privacy
             successBox.classList.remove('d-none');
 
             // Invia i dati a Web3Forms
