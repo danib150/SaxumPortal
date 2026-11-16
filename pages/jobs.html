@@ -144,7 +144,7 @@
 
     </section>
 
-<!-- Script per invio asincrono corretto con Web3Forms -->
+<!-- Script per invio asincrono in formato JSON pulito -->
     <script>
         const form = document.getElementById('candidaturaForm');
         const successBox = document.getElementById('successBox');
@@ -166,16 +166,32 @@
             const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.innerHTML = 'Invio in corso...';
 
-            // Raccoglie automaticamente tutti i dati del form
-            const formData = new FormData(form);
-            
-            // Forza l'aggiunta esplicita dell'access_key per evitare l'errore 400
-            formData.append('access_key', '1143c03c-1439-4ca7-b0de-466229815da0');
+            // Costruiamo l'oggetto JSON esplicito con tutti i campi, inclusa l'access_key
+            const formData = {
+                access_key: "1143c03c-1439-4ca7-b0de-466229815da0",
+                subject: "Nuova candidatura ricevuta da Saxum Jobs",
+                nome: document.getElementById('nome').value,
+                cognome: document.getElementById('cognome').value,
+                sesso: document.getElementById('sesso').value,
+                ruolo: document.getElementById('ruolo').value,
+                provincia: document.getElementById('provincia').value,
+                comune: document.getElementById('comune').value,
+                email: document.getElementById('email').value,
+                telefono: document.getElementById('telefono').value,
+                instagram: document.getElementById('instagram').value,
+                tiktok: document.getElementById('tiktok').value,
+                cv: document.getElementById('cv').value,
+                bio: document.getElementById('bio').value
+            };
 
             // Invia i dati a Web3Forms
             fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formData)
             })
             .then(async (response) => {
                 let jsonResponse = await response.json();
