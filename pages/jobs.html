@@ -144,6 +144,7 @@
 
     </section>
 
+<!-- Script per invio asincrono corretto con Web3Forms -->
     <script>
         const form = document.getElementById('candidaturaForm');
         const successBox = document.getElementById('successBox');
@@ -165,10 +166,13 @@
             const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.innerHTML = 'Invio in corso...';
 
-            // Raccoglie automaticamente tutti i dati del form in un oggetto FormData
+            // Raccoglie automaticamente tutti i dati del form
             const formData = new FormData(form);
+            
+            // Forza l'aggiunta esplicita dell'access_key per evitare l'errore 400
+            formData.append('access_key', '1143c03c-1439-4ca7-b0de-466229815da0');
 
-            // Invia i dati a Web3Forms come form-data standard (evita il blocco di sicurezza 400)
+            // Invia i dati a Web3Forms
             fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 body: formData
